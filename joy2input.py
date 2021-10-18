@@ -14,6 +14,7 @@ clock = pygame.time.Clock()
 deadzone = 0.15
 speed_x = 8
 speed_y = 8
+speed_div = 4
 joystick = pygame.joystick.Joystick(0)
 
 try:
@@ -33,32 +34,36 @@ try:
 		
 		if analogs[1][1] < -deadzone or analogs[1][1] > deadzone:
 			mouse_ctrl.move(0, speed_y * analogs[1][1])
-		
-		if analogs[0][0] < -deadzone:
-			keyboard_ctrl.press("A")
-			keyboard_ctrl.release("A")
-		
-		if analogs[0][0] > deadzone:
-			keyboard_ctrl.press("D")
-			keyboard_ctrl.release("D")
-		
-		if analogs[0][1] < -deadzone:
-			keyboard_ctrl.press("W")
-			keyboard_ctrl.release("W")
-		
-		if analogs[0][1] > deadzone:
-			keyboard_ctrl.press("S")
-			keyboard_ctrl.release("S")
 
 		for event in events:
 			if event.type == pygame.JOYAXISMOTION:
+				if analogs[0][0] < -deadzone:
+					keyboard_ctrl.press("A")
+				else:
+					keyboard_ctrl.release("A")
+				
+				if analogs[0][0] > deadzone:
+					keyboard_ctrl.press("D")
+				else:
+					keyboard_ctrl.release("D")
+				
+				if analogs[0][1] < -deadzone:
+					keyboard_ctrl.press("W")
+				else:
+					keyboard_ctrl.release("W")
+				
+				if analogs[0][1] > deadzone:
+					keyboard_ctrl.press("S")
+				else:
+					keyboard_ctrl.release("S")
+				
 				# Triggers - Right/Left Click (Press/Release)
-				if triggers[0] > -1.0 + deadzone:
+				if triggers[0] > -deadzone:
 					mouse_ctrl.press(mouse.Button.right)
 				else:
 					mouse_ctrl.release(mouse.Button.right)
 				
-				if triggers[1] > -1.0 + deadzone:
+				if triggers[1] > -deadzone:
 					mouse_ctrl.press(mouse.Button.left)
 				else:
 					mouse_ctrl.release(mouse.Button.left)
@@ -100,9 +105,20 @@ try:
 					keyboard_ctrl.release(keyboard.Key.ctrl)
 				
 				# Middle Buttons
+				if middle_buttons[0]:
+					keyboard_ctrl.press(keyboard.Key.f5)
+					keyboard_ctrl.release(keyboard.Key.f5)
+
 				if middle_buttons[1]:
 					keyboard_ctrl.press(keyboard.Key.esc)
 					keyboard_ctrl.release(keyboard.Key.esc)
+
+		# DPAD
+		if dpad[0] != 0:
+			mouse_ctrl.move((speed_x / speed_div) * dpad[0], 0)
+		
+		if dpad[1] != 0:
+			mouse_ctrl.move(0, (speed_y / speed_div) * -dpad[1])
 
 		'''
 		print(f"[X360]")
