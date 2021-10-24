@@ -4,6 +4,7 @@
 from pynput import mouse, keyboard
 import pygame
 import math
+import time
 
 pygame.init()
 pygame.joystick.init()
@@ -16,6 +17,7 @@ speed_x = 8
 speed_y = 8
 speed_div = 4
 joystick = pygame.joystick.Joystick(0)
+enabled = True
 
 try:
 	while True:
@@ -24,9 +26,16 @@ try:
 		triggers = [joystick.get_axis(2), joystick.get_axis(5)] # [LT, RT]
 		buttons = [joystick.get_button(0), joystick.get_button(1), joystick.get_button(2), joystick.get_button(3)] # [A, B, X, Y]
 		bumper_buttons = [joystick.get_button(4), joystick.get_button(5)] # [LB, RB]
-		middle_buttons = [joystick.get_button(6), joystick.get_button(7)] # [BACK, START]
+		middle_buttons = [joystick.get_button(6), joystick.get_button(7), joystick.get_button(8)] # [BACK, START, GUIDE]
 		stick_buttons = [joystick.get_button(9), joystick.get_button(10)] # [L, R]
 		dpad = joystick.get_hat(0)
+
+		if middle_buttons[2]:
+			enabled = not enabled
+			time.sleep(0.5)
+		
+		if not enabled:
+			continue
 		
 		# Analogs - Mouse X/Y movement, AWSD
 		if analogs[1][0] < -deadzone or analogs[1][0] > deadzone:
